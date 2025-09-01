@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "django-ai-validator"
+version = "0.1.0"
+description = "A Django library for AI-powered data validation and cleaning."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "mazafard", email = "each_scow_6j@icloud.com" },
+]
+dependencies = [
+    "django>=4.2",
+    "openai>=1.0.0",
+    "celery>=5.3.0",
+    "google-generativeai>=0.3.0",
+    "ollama>=0.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/mazafard/django-ai-validator"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/django_ai_validator"]

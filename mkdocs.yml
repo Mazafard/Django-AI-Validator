@@ -1,0 +1,49 @@
+site_name: Django AI Validator
+site_url: https://mazafard.github.io/django-ai-validator
+site_description: AI-powered data validation and cleaning for Django.
+repo_url: https://github.com/mazafard/django-ai-validator
+repo_name: mazafard/django-ai-validator
+
+theme:
+  name: material
+  features:
+    - navigation.indexes
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+
+nav:
+  - Home: index.md
+  - User Guide:
+    - Validators: user-guide/validators.md
+    - Fields: user-guide/fields.md
+    - Admin Integration: user-guide/admin.md
+    - Testing: user-guide/testing.md
+    - Best Practices: user-guide/best-practices.md
+  - Advanced:
+    - Configuration: advanced/configuration.md
+    - Asynchronous Cleaning: advanced/async.md
+    - Custom Providers: advanced/custom-providers.md
+    - Architecture: advanced/architecture.md
+  - API Reference: api.md
