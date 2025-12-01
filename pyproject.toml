@@ -21,7 +21,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mazafard/django-ai-validator"
+Homepage = "https://mazafard.github.io/Django-AI-Validator/"
+Source = "https://github.com/mazafard/django-ai-validator"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/django_ai_validator"]
