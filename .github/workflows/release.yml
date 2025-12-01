@@ -26,7 +26,17 @@ jobs:
 
       - name: Run tests
         run: |
-          python sandbox/manage.py test sandbox_app
+          coverage run --source=src/django_ai_validator sandbox/manage.py test sandbox_app
+          coverage xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
 
   release:
     needs: test
