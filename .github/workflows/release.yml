@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install -r requirements-dev.txt
+        run: |
+          python sandbox/manage.py test sandbox_app
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump Version
+        id: bump_version
+        run: |
+          # Simple python script to bump patch version in pyproject.toml
+          python3 -c "import re; c=open('pyproject.toml').read(); v=re.search(r'version = \"(\d+\.\d+\.\d+)\"', c).group(1); parts=list(map(int, v.split('.'))); parts[2]+=1; new_v='.'.join(map(str, parts)); open('pyproject.toml','w').write(re.sub(r'version = \"\d+\.\d+\.\d+\"', f'version = \"{new_v}\"', c)); print(f'NEW_VERSION={new_v}')" >> $GITHUB_OUTPUT
+
+      - name: Commit and Tag
+        env:
+          NEW_VERSION: ${{ steps.bump_version.outputs.NEW_VERSION }}
+        run: |
+          git add pyproject.toml
+          git commit -m "Bump version to $NEW_VERSION [skip ci]"
+          git tag v$NEW_VERSION
+          git push
+          git push origin v$NEW_VERSION
+
+      - name: Build Package
+        run: python -m build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
