@@ -6,7 +6,7 @@ test:
 	python3 -m pytest
 
 coverage:
-	python3 -m pytest --cov=src/django_ai_validator --cov-report=html
+	python3 -m pytest
 	@echo "HTML report generated in htmlcov/index.html"
 
 build: clean

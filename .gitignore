@@ -33,3 +33,6 @@ site/
 # Testing
 .coverage
 htmlcov/
+junit.xml
+coverage.xml
+
