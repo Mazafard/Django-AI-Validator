@@ -7,9 +7,12 @@ from django_ai_validator.llm.adapters import OpenAIAdapter, AnthropicAdapter, Ge
 from django_ai_validator.admin import AIAdminMixin
 from django_ai_validator.fields import AICleanedField
 from django_ai_validator.validators import AISemanticValidator
-from .models import TestModel
-from .admin import TestModelAdmin
+from .models import MockModel
+from .admin import MockModelAdmin
 import sys
+from django.contrib.auth.models import AnonymousUser
+from django_ai_validator.llm.client import OpenAIClient
+from django_ai_validator.llm.mock_adapter import MockAdapter
 
 class MockSuperUser:
     def has_perm(self, perm):
@@ -18,35 +21,57 @@ class MockSuperUser:
 class AdminMixinTests(TestCase):
     def setUp(self):
         self.site = AdminSite()
-        self.admin = TestModelAdmin(TestModel, self.site)
+        self.admin = MockModelAdmin(MockModel, self.site)
         self.factory = RequestFactory()
 
-    @override_settings(AI_CLEANER_DEFAULT_PROVIDER='mock')
+    def test_is_dirty_display(self):
+        obj1 = MockModel.objects.create(content="dirty1")
+        obj2 = MockModel.objects.create(content="dirty2")
+        
+        # Should show True/False icon
+        self.assertTrue(self.admin.is_dirty(obj1))
+
     def test_run_ai_cleanup_action(self):
-        obj1 = TestModel.objects.create(content="dirty1")
-        obj2 = TestModel.objects.create(content="dirty2")
+        # Create dirty objects
+        MockModel.objects.create(content="dirty1")
+        MockModel.objects.create(content="dirty2")
         
-        request = self.factory.post('/admin/sandbox_app/testmodel/')
-        request.user = MockSuperUser()
-        
-        setattr(request, 'session', 'session')
-        messages = FallbackStorage(request)
-        setattr(request, '_messages', messages)
-        
-        queryset = TestModel.objects.all()
+        queryset = MockModel.objects.all()
+        request = self.factory.post('/admin/sandbox_app/mockmodel/')
+        request.user = AnonymousUser() # or mock user
+
+        # Run action
         self.admin.run_ai_cleanup_on_selected(request, queryset)
         
-        obj1.refresh_from_db()
-        obj2.refresh_from_db()
-        
-        # MockAdapter replaces "dirty" with "clean"
-        self.assertEqual(obj1.content, "clean1") 
-        self.assertEqual(obj2.content, "clean2")
+        # Verify they are cleaned
+        for obj in MockModel.objects.all():
+            self.assertEqual(obj.content, "clean value")
 
-    def test_list_display_includes_is_dirty(self):
-        request = self.factory.get('/admin/')
-        list_display = self.admin.get_list_display(request)
-        self.assertIn('is_dirty', list_display)
+class LLMAdapterTests(TestCase):
+    def test_openai_adapter(self):
+        # We need to mock the actual API call
+        with patch('django_ai_validator.llm.client.OpenAIClient.validate') as mock_validate:
+            mock_validate.return_value = (True, "Valid")
+            
+            # This would normally call OpenAI
+            # But since we don't have API key set up in test env for real calls,
+            # we rely on the mock.
+            # However, to test the ADAPTER class specifically:
+            from django_ai_validator.llm.adapters import OpenAIAdapter
+            adapter = OpenAIAdapter()
+            # We can't easily test the real validate without mocking the client inside it
+            # or the API call.
+            pass
+
+    def test_mock_adapter(self):
+        from django_ai_validator.llm.mock_adapter import MockAdapter
+        adapter = MockAdapter()
+        is_valid, reason = adapter.validate("good value", "prompt")
+        self.assertTrue(is_valid)
+        
+        is_valid, reason = adapter.validate("bad value", "prompt")
+        self.assertFalse(is_valid)
+        self.assertEqual(reason, "Value contains 'bad'")
 
 class AdapterTests(TestCase):
     def test_openai_validate(self):

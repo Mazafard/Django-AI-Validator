@@ -4,3 +4,6 @@ coverage
 mkdocs-material
 mkdocstrings
 mkdocstrings-python
+pytest
+pytest-django
+pytest-cov

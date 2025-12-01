@@ -5,17 +5,16 @@ from django_ai_validator.validators import AISemanticValidator
 from django_ai_validator.fields import AICleanedField
 from django.test.utils import override_settings
 
-# Define a test model
-class TestModel(models.Model):
-    content = AICleanedField(cleaning_prompt="Clean this", blank=True)
-    validated_content = models.CharField(
-        max_length=100,
-        validators=[AISemanticValidator(prompt_template="Validate this")],
-        blank=True
-    )
+from sandbox_app.models import MockModel
 
-@override_settings(AI_CLEANER_LLM_CLIENT='django_ai_validator.llm.mock_client.MockLLMClient')
+@override_settings(AI_CLEANER_DEFAULT_PROVIDER='mock')
 class AICleanerTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        from django_ai_validator.llm.factory import LLMFactory
+        from django_ai_validator.llm.mock_factory import MockFactory
+        LLMFactory.register('mock', MockFactory)
     def test_validator_valid(self):
         validator = AISemanticValidator(prompt_template="Check this")
         # "good" should be valid per MockLLMClient
@@ -29,7 +28,7 @@ class AICleanerTests(TestCase):
         self.assertIn("Value contains 'bad'", str(cm.exception))
 
     def test_field_cleaning(self):
-        obj = TestModel(content="dirty value")
+        obj = MockModel(content="dirty value")
         obj.save()
         self.assertEqual(obj.content, "clean value")
 
@@ -39,6 +38,6 @@ class AICleanerTests(TestCase):
         # The prompt asked for "Validator Base Class", which implies standard Django validators.
         # Standard validators run during full_clean().
         
-        obj = TestModel(validated_content="bad value")
+        obj = MockModel(validated_content="bad value")
         with self.assertRaises(ValidationError):
             obj.full_clean()

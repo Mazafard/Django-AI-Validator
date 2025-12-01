@@ -3,12 +3,10 @@ install:
 	pip3 install -r requirements-dev.txt
 
 test:
-	python3 manage.py test sandbox_app
+	python3 -m pytest
 
 coverage:
-	coverage run --source=src/django_ai_validator sandbox/manage.py test sandbox_app
-	coverage report
-	coverage html
+	python3 -m pytest --cov=src/django_ai_validator --cov-report=html
 	@echo "HTML report generated in htmlcov/index.html"
 
 build: clean

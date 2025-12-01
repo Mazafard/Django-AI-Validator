@@ -26,8 +26,7 @@ jobs:
 
       - name: Run tests
         run: |
-          coverage run --source=src/django_ai_validator sandbox/manage.py test sandbox_app
-          coverage xml
+          python -m pytest
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
