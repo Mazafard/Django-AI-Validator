@@ -1,5 +1,11 @@
 # Django AI Validator
 
+[![PyPI version](https://badge.fury.io/py/django-ai-validator.svg)](https://badge.fury.io/py/django-ai-validator)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://mazafard.github.io/django-ai-validator/)
+
+**Documentation**: [https://mazafard.github.io/django-ai-validator/](https://mazafard.github.io/django-ai-validator/)
+
 A Django library for AI-powered data validation and cleaning.
 
 ## Features
