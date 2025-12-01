@@ -110,6 +110,10 @@ from django_ai_validator.fields import AICleanedField
 class Feedback(models.Model):
     message = AICleanedField(
         cleaning_prompt="Remove PII.",
-        use_async=True
     )
 ```
+
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=mazafard/django-ai-validator&type=Date)](https://star-history.com/#mazafard/django-ai-validator&Date)
