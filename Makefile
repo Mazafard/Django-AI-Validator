@@ -1,9 +1,9 @@
 install:
-	pip install -e .
-	pip install -r requirements-dev.txt
+	pip3 install -e .
+	pip3 install -r requirements-dev.txt
 
 test:
-	python manage.py test sandbox_app
+	python3 manage.py test sandbox_app
 
 coverage:
 	coverage run --source=src/django_ai_validator sandbox/manage.py test sandbox_app
@@ -12,7 +12,7 @@ coverage:
 	@echo "HTML report generated in htmlcov/index.html"
 
 build: clean
-	python -m build
+	python3 -m build
 
 clean:
 	rm -rf dist/ build/ *.egg-info/
