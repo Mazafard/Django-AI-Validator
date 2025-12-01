@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "django-ai-validator"
-version = "0.1.5"
+version = "0.1.6"
 description = "A Django library for AI-powered data validation and cleaning."
 readme = "README.md"
 requires-python = ">=3.10"
