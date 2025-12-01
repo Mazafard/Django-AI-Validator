@@ -1,0 +1,6 @@
+build
+twine
+coverage
+mkdocs-material
+mkdocstrings
+mkdocstrings-python
