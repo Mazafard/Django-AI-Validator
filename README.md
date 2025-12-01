@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/django-ai-validator.svg)](https://badge.fury.io/py/django-ai-validator)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![codecov](https://codecov.io/gh/mazafard/django-ai-validator/graph/badge.svg?token=YOUR_TOKEN_HERE)](https://codecov.io/gh/mazafard/django-ai-validator)
+[![codecov](https://codecov.io/gh/Mazafard/Django-AI-Validator/graph/badge.svg?token=SOQZ6ZCHZD)](https://codecov.io/gh/Mazafard/Django-AI-Validator)
 [![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://mazafard.github.io/django-ai-validator/)
 
 **Documentation**: [https://mazafard.github.io/django-ai-validator/](https://mazafard.github.io/django-ai-validator/)
